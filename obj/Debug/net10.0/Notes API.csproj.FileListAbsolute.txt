@@ -1,0 +1,33 @@
+C:\Notes API\Notes API\bin\Debug\net10.0\appsettings.Development.json
+C:\Notes API\Notes API\bin\Debug\net10.0\appsettings.json
+C:\Notes API\Notes API\bin\Debug\net10.0\Notes API.staticwebassets.endpoints.json
+C:\Notes API\Notes API\bin\Debug\net10.0\Notes API.exe
+C:\Notes API\Notes API\bin\Debug\net10.0\Notes API.deps.json
+C:\Notes API\Notes API\bin\Debug\net10.0\Notes API.runtimeconfig.json
+C:\Notes API\Notes API\bin\Debug\net10.0\Notes API.dll
+C:\Notes API\Notes API\bin\Debug\net10.0\Notes API.pdb
+C:\Notes API\Notes API\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Notes API\Notes API\bin\Debug\net10.0\Microsoft.OpenApi.dll
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.csproj.AssemblyReference.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.AssemblyInfoInputs.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.AssemblyInfo.cs
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.csproj.CoreCompileInputs.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.MvcApplicationPartsAssemblyInfo.cs
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.MvcApplicationPartsAssemblyInfo.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\rjimswa.dswa.cache.json
+C:\Notes API\Notes API\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+C:\Notes API\Notes API\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\Notes API\Notes API\obj\Debug\net10.0\scopedcss\bundle\Notes API.styles.css
+C:\Notes API\Notes API\obj\Debug\net10.0\staticwebassets.build.json
+C:\Notes API\Notes API\obj\Debug\net10.0\staticwebassets.build.json.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\staticwebassets.development.json
+C:\Notes API\Notes API\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+C:\Notes API\Notes API\obj\Debug\net10.0\swae.build.ex.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.csproj.Up2Date
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.dll
+C:\Notes API\Notes API\obj\Debug\net10.0\refint\Notes API.dll
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.pdb
+C:\Notes API\Notes API\obj\Debug\net10.0\Notes API.genruntimeconfig.cache
+C:\Notes API\Notes API\obj\Debug\net10.0\ref\Notes API.dll
