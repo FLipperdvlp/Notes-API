@@ -42,5 +42,5 @@ public class NotesController(INoteService noteService) : Controller
         return Ok(note);
     }
 
-    
+    //TODO: DELETE NOTE AND UPDATE NOTE
 }
