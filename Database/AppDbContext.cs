@@ -5,16 +5,18 @@ namespace Notes_API.Database;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Note> Notes { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        Database.EnsureCreated();
     }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Note> Notes { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new NoteConfiguration());
-        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Notes)
+            .WithOne(n => n.User)
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

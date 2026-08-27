@@ -1,46 +1,78 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Notes_API.DTOs;
+using Notes_API.Entities;
 using Notes_API.Interfaces;
-using Notes_API.Models;
-using Notes_API.Models.Request;
+using System.Security.Claims;
+
 namespace Notes_API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class NotesController(INoteService noteService) : Controller
+[Authorize]
+public class NotesController(INoteService noteService) : ControllerBase
 {
-    private int UserId => 1;
+    private int UserId =>
+        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    [HttpGet] // ** Ger all notes
-    public IActionResult GetNotes()
+    [HttpGet]
+    public async Task<IActionResult> GetNotes()
     {
-        var notes = noteService.GetAll();
+        var notes = await noteService.GetAllAsync(UserId);
 
         return Ok(notes);
     }
 
-    [HttpGet("{id}")] // ** Get note by id
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetNoteById(int id)
     {
-        var note = noteService.GetAll().FirstOrDefault(n => n.Id == id);
+        var note = await noteService.GetByIdAsync(id, UserId);
 
-        return note is null ? NotFound() : Ok(note);
-    }
-
-    [HttpGet("user/{userId}")] // ** Get notes by user id
-    public async Task<IActionResult> GetNotesByUserId(int userId)
-    {
-        var notes = await noteService.GetNotesByUserIdAsync(userId);
-
-        return Ok(notes);
-    }
-
-    [HttpPost] // ** Create note
-    public async Task<IActionResult> CreateNote(CreateNoteRequest model)
-    {
-        var note = noteService.CreateNote(UserId, model.Title, model.Content);
+        if (note is null)
+            return NotFound();
 
         return Ok(note);
     }
 
-    //TODO: DELETE NOTE AND UPDATE NOTE
+    [HttpPost]
+    public async Task<IActionResult> CreateNote(CreateNoteDTO model)
+    {
+        var note = await noteService.CreateAsync(new Note
+        {
+            UserId = UserId,
+            Title = model.Title,
+            Content = model.Content
+        });
+
+        return Ok(note);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateNote(int id, EditNoteDTO model)
+    {
+        var note = await noteService.EditAsync(
+            id,
+            UserId,
+            new Note
+            {
+                Title = model.Title,
+                Content = model.Content
+            });
+
+        if (note is null)
+            return NotFound();
+
+        return Ok(note);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteNote(int id)
+    {
+        var result = await noteService.DeleteAsync(id, UserId);
+
+        if (!result)
+            return NotFound();
+
+        return NoContent();
+    }
 }

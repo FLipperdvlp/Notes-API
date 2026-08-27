@@ -4,99 +4,47 @@ using Notes_API.Database;
 using Notes_API.Entities;
 using Notes_API.Services;
 using Notes_API.Interfaces;
-using Notes_API.Models;
-using Notes_API.Models.Login;
-using Notes_API.Models.Register;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+using Notes_API.DTOs;
 
 namespace Notes_API.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class AuthController : Controller
 {
-    private readonly IUserService _userService;
-    public AuthController(IUserService userService)
+    private readonly IAuthService auth;
+    public AuthController(IAuthService authService)
     {
-        _userService = userService;
+        auth = authService;
     }
 
-    //! GET: Auth/Register =========================================================================
-    [HttpGet]
-    public IActionResult Register()
-    {
-        return View();
-    }
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest model)
+    public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
     {
-        if (!ModelState.IsValid)
-            return View(model);
+        var user = await auth.RegisterAsync(dto.Email, dto.Name, dto.Password);
 
-        await _userService.CreateUser(model.Name, model.Email, model.Password);
+        if (user == null)
+            return BadRequest("User already exists");
 
-        return RedirectToAction("Login");
-    }
-
-    //! GET: Auth/Login ============================================================================
-    [HttpGet]
-    public IActionResult Login()
-    {
-        return View();
+        return Ok(new
+        {
+            user.Id,
+            user.Email,
+            user.Name
+        });
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest model)
+    public async Task<IActionResult> Login(LoginDTO dto)
     {
-        if (!ModelState.IsValid)
-            return View(model);
+        var token = await auth.LoginAsync(dto.Email, dto.Password);
 
-        var user = await _userService.GetUserByCredentialsAsync(
-            model.Email,
-            model.Password
-        );
+        if (token == null)
+            return Unauthorized("Invalid credentials");
 
-        if (user == null)
+        return Ok(new
         {
-            ModelState.AddModelError(
-                "",
-                "Неверный email или пароль."
-            );
-
-            return View(model);
-        }
-
-        var claims = new List<Claim>
-        {
-            new Claim(
-                ClaimTypes.NameIdentifier,
-                user.Id.ToString()
-            ),
-            new Claim(
-                ClaimTypes.Name,
-                user.Name
-            ),
-            new Claim(
-                ClaimTypes.Email,
-                user.Email
-            )
-        };
-
-        var identity = new ClaimsIdentity(
-            claims,
-            CookieAuthenticationDefaults.AuthenticationScheme
-        );
-
-        var principal = new ClaimsPrincipal(identity);
-
-        await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            principal
-        );
-
-        return RedirectToAction(
-            "List",
-            "Notes"
-        );
+            token
+        });
     }
 }

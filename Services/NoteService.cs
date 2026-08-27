@@ -1,67 +1,64 @@
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 using Notes_API.Database;
 using Notes_API.Entities;
 using Notes_API.Interfaces;
 
-namespace Notes_API.Services
+namespace Notes_API.Services;
+
+public class NoteService(AppDbContext dbContext) : INoteService
 {
-    public class NoteService(AppDbContext dbContext) : INoteService
+    public async Task<IEnumerable<Note>> GetAllAsync(int userId)
     {
-        public async Task<IEnumerable<Note>> GetNotesByUserIdAsync(int userId)
-        {
-            return await dbContext.Notes.Where(t => t.UserId == userId).ToListAsync();
-        }
-        public async Task<Note> CreateNote(int userId, string title, string content)
-        {
-            var newNote = new Note
-            {
-                UserId = userId,
-                Title = title,
-                Content = content,
-                CreatedAt = DateTime.UtcNow
-            };
+        return await dbContext.Notes
+            .Where(n => n.UserId == userId)
+            .ToListAsync();
+    }
 
-            dbContext.Notes.Add(newNote);
-            await dbContext.SaveChangesAsync();
-            return newNote;
-        }
+    public async Task<Note?> GetByIdAsync(int id, int userId)
+    {
+        return await dbContext.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+    }
 
-        public async Task<Note> ToggleNote(int noteId, int userId)
-        {
-            var note = await dbContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId && n.UserId == userId);
-            if (note is null)
-                return null!; 
+    public async Task<Note> CreateAsync(Note note)
+    {
+        note.CreatedAt = DateTime.UtcNow;
 
-            note.Title = note.Title == "Toggled" ? "Untoggled" : "Toggled";
-            await dbContext.SaveChangesAsync();
-            return note;
-        }
-        public async Task<bool> DeleteNote(int noteId, int userId)
-        {
-            var note = await dbContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId && n.UserId == userId);
-            if (note is null)
-                return false;
+        dbContext.Notes.Add(note);
 
-            dbContext.Notes.Remove(note);
-            await dbContext.SaveChangesAsync();
-            return true;
-        }
+        await dbContext.SaveChangesAsync();
 
-        public async Task<Note> EditNote( int noteId, int userId, string title, string content)
-        {
-            var note = await dbContext.Notes
-                .FirstOrDefaultAsync( n => n.Id == noteId && n.UserId == userId );
+        return note;
+    }
 
-            if (note is null)
-                return null!;
+    public async Task<Note> EditAsync(int id, int userId, Note note)
+    {
+        var existingNote = await dbContext.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
 
-            note.Title = title;
-            note.Content = content;
-            await dbContext.SaveChangesAsync();
-            
-            return note;
-        }
+        if (existingNote is null)
+            return null!;
+
+        existingNote.Title = note.Title;
+        existingNote.Content = note.Content;
+
+        await dbContext.SaveChangesAsync();
+
+        return existingNote;
+    }
+
+    public async Task<bool> DeleteAsync(int id, int userId)
+    {
+        var note = await dbContext.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+
+        if (note is null)
+            return false;
+
+        dbContext.Notes.Remove(note);
+
+        await dbContext.SaveChangesAsync();
+
+        return true;
     }
 }
